@@ -289,7 +289,7 @@ public class HelloController implements Initializable {
         this.lblInfoComp2.setVisible(false);
         this.lblSomme.setVisible(true);
         this.lblInfoSomme.setVisible(true);
-        coffre.alea_code(0,0);
+        coffre.alea_code(0,9);
         this.lblSomme.setText(String.valueOf(coffre.somme()));
         cacher_boutons(true);
     }
