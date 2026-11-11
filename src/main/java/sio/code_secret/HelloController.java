@@ -15,6 +15,8 @@ public class HelloController implements Initializable {
     @FXML
     private ImageView fond;
     @FXML
+    private ImageView autre_fond;
+    @FXML
     private Label lblNb1;
     @FXML
     private Label lblNb2;
@@ -100,6 +102,13 @@ public class HelloController implements Initializable {
     private Button ClickRejouer;
     @FXML
     private Button ClickQuitter;
+    @FXML
+    private Button ClickFacile;
+    @FXML
+    private Button ClickMoyen;
+    @FXML
+    private Button ClickDifficile;
+
 
 
     Coffre coffre;
@@ -113,14 +122,16 @@ public class HelloController implements Initializable {
     String phrase;
     boolean protection=true;
 
+    String niveau="";
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         dialogue=0;
         presentation();
         cacher_boutons(false);
+        coffre=new Coffre();
         fond.setImage(new Image(getClass().getResourceAsStream("/images/coffre.png")));
-        coffre = new Coffre();
         malus = new Malus();
 
         this.lblNb1.setText(String.valueOf(this.coffre.getNbDepart1()));
@@ -224,18 +235,18 @@ public class HelloController implements Initializable {
 
     public void appliquerMalus(){
         if(tourMalus>0 && "brouillard marin".equals(choix)){
-            this.lblDescriptionMalus.setText("Moins d'information \n te sont données");
+            this.lblDescriptionMalus.setText("Moins d'informations \n te sont données.");
             this.lblDescriptionMalus.setVisible(true);
             this.lblTest.setText(coffre.Brouillard_marin());
             tourMalus--;
         } else if(tourMalus>0 && "changement de cap".equals(choix)){
             this.lblDescriptionMalus.setVisible(true);
-            this.lblDescriptionMalus.setText("Change un chiffre\n aléatoire du code");
+            this.lblDescriptionMalus.setText("Change un chiffre\n aléatoire du code.");
             coffre.changement_de_cap();
             tourMalus = tourMalus - 3;
         } else if(tourMalus>0 && "mal de mer".equals(choix)){
             this.lblDescriptionMalus.setVisible(true);
-            this.lblDescriptionMalus.setText("les informations \n sont mélangés");
+            this.lblDescriptionMalus.setText("Les informations \n sont mélangées.");
             this.lblTest.setText(coffre.mal_de_mer());
             tourMalus--;
         } else {
@@ -247,20 +258,9 @@ public class HelloController implements Initializable {
 
 
     public void ClickIntello(){
-        phrase=" Intellectuel? Intéressant ton type possède 2 compétences. \nLaquelle choisiras-tu? ";
-        this.lblInfoComp1.setText("En début de partie \n la somme de tout les \n chiffres t'es donnés.");
-        this.lblInfoComp2.setText("Apres chaque tentative\n tu sais si la somme de\n ta proposition est superieure\n a celle du code");
-        ClickIntello.setVisible(false);
-        ClickBrute.setVisible(false);
-        ClickChanceux.setVisible(false);
-        dialogue=13;
-        presentation();
-    }
-
-    public void ClickBrute(){
-        phrase=" Brute? Intéressant ton type possède 2 compétences. \nLaquelle choisiras-tu? ";
-        this.lblInfoComp1.setText("Il se suffit de trouver\n 5 chiffres pour \n ouvrir le coffre");
-        this.lblInfoComp2.setText("Tout les chiffres qui \n composent le code sont\n entre 0 et 6");
+        phrase="Intellectuel ? Intéressant, ton type possède 2 compétences. \nLaquelle choisiras-tu ?";
+        this.lblInfoComp1.setText("En début de partie, \n la somme de tous les \n chiffres t'est donnée.");
+        this.lblInfoComp2.setText("Après chaque tentative,\n tu sais si la somme de\n ta proposition est supérieure\n à celle du code.");
         ClickIntello.setVisible(false);
         ClickBrute.setVisible(false);
         ClickChanceux.setVisible(false);
@@ -268,9 +268,10 @@ public class HelloController implements Initializable {
         presentation();
     }
 
-    public void ClickChanceux(){
-        phrase=" Chanceux? Intéressant ton type ne possède \n qu'une seule compétences.";
-        this.lblChance.setText("Le premier Malus est ignoré.");
+    public void ClickBrute(){
+        phrase="Brute ? Intéressant, ton type possède 2 compétences. \nLaquelle choisiras-tu ?";
+        this.lblInfoComp1.setText("Il suffit de trouver\n 5 chiffres pour \n ouvrir le coffre.");
+        this.lblInfoComp2.setText("Tous les chiffres qui \n composent le code sont\n entre 0 et 6.");
         ClickIntello.setVisible(false);
         ClickBrute.setVisible(false);
         ClickChanceux.setVisible(false);
@@ -278,25 +279,45 @@ public class HelloController implements Initializable {
         presentation();
     }
 
+    public void ClickChanceux(){
+        phrase="Chanceux ? Intéressant, ton type ne possède \n qu'une seule compétence.";
+        this.lblChance.setText("Le premier malus est ignoré.");
+        ClickIntello.setVisible(false);
+        ClickBrute.setVisible(false);
+        ClickChanceux.setVisible(false);
+        dialogue=16;
+        presentation();
+    }
+
 
     public void ClickIntuition(){
         perso = new Perso("Intellectuel","Intuition");
         coffre.persoActuelle(perso);
-        this.lblTest.setText("Très bien que la partie commence");
+        this.lblTest.setText("Très bien, que la partie commence !");
         ClickIntuition.setVisible(false);
         ClickDeduction.setVisible(false);
         this.lblInfoComp1.setVisible(false);
         this.lblInfoComp2.setVisible(false);
         this.lblSomme.setVisible(true);
         this.lblInfoSomme.setVisible(true);
-        coffre.alea_code(0,9);
-        this.lblSomme.setText(String.valueOf(coffre.somme()));
         cacher_boutons(true);
+
+        //on regarde quelle est le niveau de difficulté
+
+        if (niveau=="Facile"){
+            facile();
+        } else if (niveau=="Moyen") {
+            moyen();
+        }else {
+            coffre.alea_code(0,9);
+        }
+        this.lblSomme.setText(String.valueOf(coffre.somme()));
     }
+
     public void ClickDeduction(){
         perso = new Perso("Intellectuel","Déduction");
         coffre.persoActuelle(perso);
-        this.lblTest.setText("Très bien que la partie commence");
+        this.lblTest.setText("Très bien, que la partie commence !");
         ClickIntuition.setVisible(false);
         ClickDeduction.setVisible(false);
         this.lblInfoComp1.setVisible(false);
@@ -304,42 +325,71 @@ public class HelloController implements Initializable {
         this.lblSomme.setVisible(true);
         this.lblInfoSomme.setVisible(true);
         cacher_boutons(true);
-        coffre.alea_code(0,9);
+
+        if (niveau=="Facile"){
+            facile();
+        } else if (niveau=="Moyen") {
+            moyen();
+        }else {
+            coffre.alea_code(0,9);
+        }
     }
 
     public void ClickBruteForce(){
         perso = new Perso("Brute","Brute Force");
         coffre.persoActuelle(perso);
         coffre.persoActuelle(perso);
-        this.lblTest.setText("Très bien que la partie commence");
+        this.lblTest.setText("Très bien, que la partie commence !");
         ClickBruteForce.setVisible(false);
         ClickGrosBras.setVisible(false);
         this.lblInfoComp1.setVisible(false);
         this.lblInfoComp2.setVisible(false);
-        coffre.alea_code(0,9);
         cacher_boutons(true);
+
+        if (niveau=="Facile"){
+            facile();
+        } else if (niveau=="Moyen") {
+            moyen();
+        }else {
+            coffre.alea_code(0,9);
+        }
+
     }
 
     public void ClickGrosBras(){
         perso = new Perso("Brute","Gros Bras");
         coffre.persoActuelle(perso);
-        this.lblTest.setText("Très bien que la partie commence");
+        this.lblTest.setText("Très bien, que la partie commence !");
         ClickBruteForce.setVisible(false);
         ClickGrosBras.setVisible(false);
         this.lblInfoComp1.setVisible(false);
         this.lblInfoComp2.setVisible(false);
         cacher_boutons(true);
-        coffre.alea_code(0,6);
+
+        if (niveau=="Facile"){
+            facile();
+        } else if (niveau=="Moyen") {
+            moyen();
+        }else {
+            coffre.alea_code(0,6);
+        }
     }
 
     public void ClickChance(){
         perso = new Perso("Chanceux");
         coffre.persoActuelle(perso);
-        this.lblTest.setText("Très bien que la partie commence");
+        this.lblTest.setText("Très bien, que la partie commence !");
         ClickChance.setVisible(false);
         this.lblChance.setVisible(false);
         cacher_boutons(true);
-        coffre.alea_code(0,9);
+
+        if (niveau=="Facile"){
+            facile();
+        } else if (niveau=="Moyen") {
+            moyen();
+        }else {
+            coffre.alea_code(0,9);
+        }
     }
 
 
@@ -347,7 +397,7 @@ public class HelloController implements Initializable {
         ClickOK.setVisible(false);
         ClickPasser.setVisible(false);
         dialogue=12;
-        phrase="Maintenant que je t'ai tout expliqué dit moi \n  quelle type de pirate tu est";
+        phrase="Choisis ta difficulté";
         presentation();
     }
 
@@ -375,17 +425,17 @@ public class HelloController implements Initializable {
 
     public void ClickOK(){
         if (dialogue==1){
-            phrase="Je suppose que tu est ici pour mon trésor comme tout \n les autres qui sont venus avant toi.";
+            phrase="Je suppose que tu es ici pour mon trésor, comme tous \n les autres qui sont venus avant toi.";
         }else if(dialogue==3){
-            phrase="Malheuresement pour toi ce coffre est protege par un \n code à 6 chiffres que tu devra trouver.";
+            phrase="Malheureusement pour toi, ce coffre est protégé par un \n code à 6 chiffres que tu devras trouver.";
         } else if (dialogue==5) {
-            phrase="Ce coffre est aussi magique, ce qui veut dire qu'il te donnera \n des malus au fil du temps";
+            phrase="Ce coffre est aussi magique, ce qui veut dire qu'il te donnera \n des malus au fil du temps.";
         }else if (dialogue==7) {
-            phrase="En haut à droite de ta fenetre tu trouvera le nombre de \n tentative effectuer. Le coffre te donne des malus toutes \n les 10 tentatives donc fait attention";
+            phrase="En haut à droite de ta fenêtre, tu trouveras le nombre de \n tentatives effectuées. Le coffre te donne des malus toutes \n les 10 tentatives, donc fais attention.";
         }else if (dialogue==9) {
-            phrase="En haut à gauche tu trouvera le malus qui est actuellement \n en train de faire effet";
+            phrase="En haut à gauche, tu trouveras le malus qui est actuellement \n en train de faire effet.";
         }else if (dialogue==11) {
-            phrase="Maintenant que je t'ai tout expliqué dit moi \n  quelle type de pirate tu est";
+            phrase="Choisis ta difficulté";
         }
         ClickOK.setVisible(false);
         dialogue++;
@@ -401,7 +451,7 @@ public class HelloController implements Initializable {
         PauseTransition transition5 = new PauseTransition(Duration.seconds(1));
 
         if (dialogue == 0) {
-            phrase = "Oh un pirate. Cela fait bien longtemps que \n je n'en avais pas vu ici.";
+            phrase = "Oh, un pirate ! Cela fait bien longtemps que \n je n'en avais pas vu ici.";
             transition1 = new PauseTransition(Duration.seconds(0.4));
             transition2 = new PauseTransition(Duration.seconds(0.5));
             transition3 = new PauseTransition(Duration.seconds(0.5));
@@ -434,27 +484,35 @@ public class HelloController implements Initializable {
 
         }else if (dialogue==12) {
             transition1 = new PauseTransition(Duration.seconds(1));
+            transition2.setOnFinished(event -> this.lblTest.setText(phrase));
+            transition1.setOnFinished(event -> ClickFacile.setVisible(true));
+            transition3.setOnFinished(event -> ClickMoyen.setVisible(true));
+            transition4.setOnFinished(event -> ClickDifficile.setVisible(true));
+            transition5.setOnFinished(event -> ClickPasser.setVisible(false));
+
+        }else if (dialogue==13) {
+            transition1 = new PauseTransition(Duration.seconds(1));
             transition2.setOnFinished(event ->this.lblTest.setText(phrase));
             transition1.setOnFinished(event -> ClickIntello.setVisible(true));
             transition3.setOnFinished(event ->ClickBrute.setVisible(true));
             transition4.setOnFinished(event -> ClickChanceux.setVisible(true));
             transition5.setOnFinished(event -> ClickPasser.setVisible(false));
 
-        } else if (dialogue==13) {
+        } else if (dialogue==14) {
             transition1 = new PauseTransition(Duration.seconds(1));
             transition2.setOnFinished(event ->this.lblTest.setText(phrase));
             transition1.setOnFinished(event -> ClickIntuition.setVisible(true));
             transition3.setOnFinished(event -> ClickDeduction.setVisible(true));
             transition4.setOnFinished(event -> this.lblInfoComp1.setVisible(true));
             transition5.setOnFinished(event -> this.lblInfoComp2.setVisible(true));
-        } else if (dialogue==14) {
+        } else if (dialogue==15) {
             transition1 = new PauseTransition(Duration.seconds(1));
             transition2.setOnFinished(event -> this.lblTest.setText(phrase));
             transition1.setOnFinished(event -> ClickBruteForce.setVisible(true));
             transition3.setOnFinished(event -> ClickGrosBras.setVisible(true));
             transition4.setOnFinished(event -> this.lblInfoComp1.setVisible(true));
             transition5.setOnFinished(event -> this.lblInfoComp2.setVisible(true));
-        } else if (dialogue==15) {
+        } else if (dialogue==16) {
             transition2.setOnFinished(event -> this.lblTest.setText(phrase));
             transition3.setOnFinished(event -> ClickChance.setVisible(true));
             transition4.setOnFinished(event -> this.lblChance.setVisible(true));
@@ -475,7 +533,7 @@ public class HelloController implements Initializable {
         PauseTransition rejouer = new PauseTransition(Duration.seconds(4));
         PauseTransition quitter = new PauseTransition(Duration.seconds(4));
 
-        if(this.lblTest.getText().equals("Bravo tu as gagné. Mon trésor t'appartient.")){
+        if(this.lblTest.getText().equals("Bravo, tu as gagné ! Mon trésor t'appartient.")){
             cacher_boutons(false);
             this.lblMalus.setVisible(false);
             this.lblTentative.setVisible(false);
@@ -539,6 +597,63 @@ public class HelloController implements Initializable {
 
     public void ClickQuitter(){
         System.exit(0);
+    }
+
+    //création des boutons de difficulté
+
+    public void ClickFacile(){
+        niveau="Facile";
+        phrase="Maintenant que je t'ai tout expliqué, dis-moi \n quel type de pirate tu es.";
+        ClickOK.setVisible(false);
+        ClickFacile.setVisible(false);
+        ClickMoyen.setVisible(false);
+        ClickDifficile.setVisible(false);
+        presentation();
+    }
+
+    public void ClickMoyen(){
+        niveau="Moyen";
+        phrase="Maintenant que je t'ai tout expliqué, dis-moi \n quel type de pirate tu es.";
+        ClickOK.setVisible(false);
+        ClickFacile.setVisible(false);
+        ClickMoyen.setVisible(false);
+        ClickDifficile.setVisible(false);
+        presentation();
+    }
+
+    public void ClickDifficile(){
+        niveau="Difficile";
+        phrase="Maintenant que je t'ai tout expliqué, dis-moi \n quel type de pirate tu es.";
+        ClickOK.setVisible(false);
+        ClickFacile.setVisible(false);
+        ClickMoyen.setVisible(false);
+        ClickDifficile.setVisible(false);
+        presentation();
+    }
+
+    public void facile(){
+        coffre.alea_code_facile(0,9);
+        ClickUp5.setVisible(false);
+        ClickUp6.setVisible(false);
+        ClickDown5.setVisible(false);
+        ClickDown6.setVisible(false);
+        lblNb5.setVisible(false);
+        lblNb6.setVisible(false);
+    }
+
+    public void moyen(){
+        coffre.alea_code_moyen(0,9);
+        ClickUp6.setVisible(false);
+        ClickDown6.setVisible(false);
+        lblNb6.setVisible(false);
+    }
+
+    public void ClickCosmetique2(){
+        autre_fond.setImage(new Image(getClass().getResourceAsStream("/images/autre_pirate.png")));
+    }
+
+    public void ClickCosmetique1(){
+        autre_fond.setImage(new Image(getClass().getResourceAsStream("/images/autre_autre_fond.png")));
     }
 }
 

@@ -157,5 +157,11 @@
             <Font name="Arial Black" size="22.0" />
          </font>
       </Button>
+      <Button fx:id="ClickFacile" layoutX="228.0" layoutY="193.0" mnemonicParsing="false" onMouseClicked="#ClickFacile" prefHeight="44.0" prefWidth="97.0" text="Facile" visible="false" />
+      <Button fx:id="ClickMoyen" layoutX="362.0" layoutY="193.0" mnemonicParsing="false" onMouseClicked="#ClickMoyen" prefHeight="44.0" prefWidth="97.0" text="Moyen" visible="false" />
+      <Button fx:id="ClickDifficile" layoutX="505.0" layoutY="193.0" mnemonicParsing="false" onMouseClicked="#ClickDifficile" prefHeight="44.0" prefWidth="97.0" text="Difficile" visible="false" />
+      <ImageView fx:id="autre_fond" fitHeight="167.0" fitWidth="177.0" layoutX="18.0" layoutY="89.0" pickOnBounds="true" preserveRatio="true" />
+      <Button layoutX="575.0" layoutY="425.0" mnemonicParsing="false" onMouseClicked="#ClickCosmetique1" prefHeight="25.0" prefWidth="97.0" text="Cosmétique1" />
+      <Button layoutX="455.0" layoutY="425.0" mnemonicParsing="false" onMouseClicked="#ClickCosmetique2" prefHeight="25.0" prefWidth="106.0" text="Cosmétique 2" />
    </children>
 </AnchorPane>

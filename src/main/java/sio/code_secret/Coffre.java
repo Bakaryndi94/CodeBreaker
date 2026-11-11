@@ -25,6 +25,9 @@ public class Coffre {
         this.NbDepart6 = 0;
     }
 
+
+
+
     public int getNbDepart1() {
         return NbDepart1;
     }
@@ -104,9 +107,27 @@ public class Coffre {
         return valeur;
     }
 
+    // generation de nombre aléatoire un certain nombre de fois en fonction de la difficulté
+
     public void alea_code(int min, int max) {
         code.clear();
         for (int i = 0; i < 6; i++) {
+            int valeur = (int) (Math.random() * (max - min + 1)) + min;
+            code.add(valeur);
+        }
+    }
+
+    public void alea_code_facile(int min, int max) {
+        code.clear();
+        for (int i = 0; i < 4; i++) {
+            int valeur = (int) (Math.random() * (max - min + 1)) + min;
+            code.add(valeur);
+        }
+    }
+
+    public void alea_code_moyen(int min, int max) {
+        code.clear();
+        for (int i = 0; i < 5; i++) {
             int valeur = (int) (Math.random() * (max - min + 1)) + min;
             code.add(valeur);
         }
@@ -146,10 +167,10 @@ public class Coffre {
             }
         }
 
-        if (cpt_bien == 6) {
-            return "Bravo tu as gagné. Mon trésor t'appartient.";
+        if (cpt_bien == code.size()) {
+            return "Bravo, tu as gagné ! Mon trésor t'appartient.";
         }
-        if (cpt_bien == 5 && perso.getCompetences().equals("Brute Force")) {
+        if (cpt_bien == code.size()-1 && perso.getCompetences().equals("Brute Force")) {
             return "Bravo tu as gagné. Mon trésor t'appartient.";
         }
 
@@ -273,6 +294,7 @@ public class Coffre {
     public void persoActuelle (Perso perso){
         this.perso = perso;
     }
+
 }
 
 
